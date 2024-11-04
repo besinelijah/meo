@@ -12,20 +12,20 @@ const renewalImg = '/storage/images/renewal.png';
 			<div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-custom-coral m-auto">
 				<Link :href="route('admin.documentviewbusiness')" class="overflow-hidden rounded-lg shadow-lg">
 				<img class="w-full h-50 object-cover bg-custom-coral" :src="businessPermitImg" alt="Business Permit Image" />
-				<p class="text-center text-white mt-2"> Business Permit</p>
+				<p class="font-bold text-center text-white mt-2"> Business Permit</p>
 				</Link>
 			</div>
 			<div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-custom-yellow m-auto">
 				<Link :href="route('admin.documentviewbldg')" class="overflow-hidden rounded-lg shadow-lg">
 				<img class="w-full h-50 object-cover bg-custom-yellow" :src="bldgPermitImg" alt="Building Permit Image" />
-				<p class="text-center text-white mt-2"> Building Permit</p>
+				<p class="font-bold text-center text-white mt-2"> Building Permit</p>
 				</Link>
 			</div>
 			<div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-custom-teal m-auto">
 				<Link :href="route('admin.documentviewrenewal')" class="overflow-hidden rounded-lg shadow-lg">
 				<img class="w-full h-50 object-cover bg-custom-teal" :src="renewalImg"
 					alt="Renewal Business Permit Image" />
-				<p class="text-center text-white mt-2"> Business Permit Renewal</p>
+				<p class="font-bold text-center text-white mt-2"> Business Permit Renewal</p>
 				</Link>
 			</div>
 		</div>
