@@ -12,7 +12,7 @@ const props = defineProps({
 
 // Computed property to sort history data by `latest_logout` in descending order
 const sortedHistory = computed(() => {
-    return [...props.data.history].sort((a, b) => {
+    return [...props.sortedHistory].sort((a, b) => {
         return new Date(b.latest_logout) - new Date(a.latest_logout);
     });
 });
