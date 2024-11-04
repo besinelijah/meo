@@ -38,9 +38,7 @@ class History extends Model
     ) {
         $records = Client::whereHas('clientUser')
             ->with([
-                'latestLogout' => function ($query) {
-                    $query->select('client_id', 'created_at');
-                },
+                'latestLogout', // Now configured to avoid ambiguity
                 'user'
             ]);
 

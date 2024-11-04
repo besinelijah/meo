@@ -36,8 +36,10 @@ class Client extends Model
     {
         return $this->hasOne(Log::class, 'client_id', 'id')
             ->where('description', 'logout')
-            ->latestOfMany('created_at'); 
+            ->latestOfMany('created_at')
+            ->select('client_id', 'created_at'); // Explicitly select only the needed columns
     }
+
 
 
     public function user(): BelongsTo
