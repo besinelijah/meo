@@ -145,7 +145,7 @@ function selectOptionBrgy(optionBrgy) {
                             <span v-if="formData.errors.brgy" class="text-red-500 text-sm">{{ formData.errors.brgy }}</span>
                         </div>
                         <TextInput name="Street" v-model:modelValue="formData.street" :message="formData.errors.street" />
-                        <TextInput name="Contact Number" v-model:modelValue="formData.contact_number" :message="formData.errors.contact_number" />
+                        <TextInput name="Mobile Number" v-model:modelValue="formData.contact_number" :message="formData.errors.contact_number" placeholder="09123456789" />
                         <TextInput name="Email" type="email" v-model:modelValue="formData.email" :message="formData.errors.email" />
                         <TextInput name="Password" type="password" v-model:modelValue="formData.password" :message="formData.errors.password" />
                         <TextInput name="Confirm Password" type="password" v-model:modelValue="formData.password_confirmation" />
