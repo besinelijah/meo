@@ -9,6 +9,13 @@ function formatDate(date) {
 const props = defineProps({
 	data: [Object, Array],
 });
+
+// Computed property to sort history data by `latest_logout` in descending order
+const sortedHistory = computed(() => {
+    return [...props.data.history].sort((a, b) => {
+        return new Date(b.latest_logout) - new Date(a.latest_logout);
+    });
+});
 </script>
 
 <template>
@@ -35,7 +42,7 @@ const props = defineProps({
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-for="(item, index) in data.history" :key="index">
+                    <template v-for="(item, index) in sortedhistory" :key="index">
                         <tr class="border-y text-sm text-gray-900">
                             <td class="!py-2">{{ item.fname }}</td>
                             <td class="!py-2">{{ formatDate(item.latest_logout) }}</td>
@@ -44,7 +51,7 @@ const props = defineProps({
                 </tbody>
             </table>
       <div
-        v-if="data.history.length < 1"
+        v-if="sortedHistory.length < 1"
         class="w-full bg-gray-100 text-center text-sm p-5"
       >
         No data available
