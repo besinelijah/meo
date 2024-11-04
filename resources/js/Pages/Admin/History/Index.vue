@@ -9,7 +9,7 @@ defineOptions({layout: AuthenticatedLayout});
 </script>
 
 <template>
-  <Head title="Approval Queue" />
+  <Head title="History" />
     <div class="px-6">
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-center">

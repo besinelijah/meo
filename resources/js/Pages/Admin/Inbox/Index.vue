@@ -38,7 +38,7 @@ defineOptions({layout: AuthenticatedLayout});
 </script>
 
 <template>
-  <Head title="Approval Queue" />
+  <Head title="Inbox" />
   <div class="grid grid-cols-4 gap-4">
     <div class="card h-[80vh] !px-2 !m-0 !py-6">
       <div class="flex flex-column items-center mb-2">
