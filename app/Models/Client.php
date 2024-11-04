@@ -36,9 +36,9 @@ class Client extends Model
     {
         return $this->hasOne(Log::class, 'client_id', 'id')
             ->where('description', 'logout')
-            ->latestOfMany('created_at')
-            ->select('client_id', 'created_at'); // Explicitly select only the needed columns
+            ->orderBy('created_at', 'desc'); // Order by created_at to get the latest record
     }
+
 
 
 

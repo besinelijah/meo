@@ -36,16 +36,14 @@ class History extends Model
         bool $paginate = false,
         ?int $page = 1
     ) {
-        // Fetch the clients with `clientUser` and `latestLogout` relationships
-        $records = Client::whereHas('clientUser')
-            ->with([
-                'latestLogout', // Eager-load `latestLogout`
-                'user'
-            ])
-            ->get(); // Retrieve all records, without attempting SQL sorting
-        
-        // Sort by `latestLogout->created_at` in PHP
-        $sortedRecords = $records->sortByDesc(fn($client) => $client->latestLogout->created_at ?? null);
+        // Fetch clients with `latestLogout` and `user` relationships
+        $records = Client::with(['latestLogout', 'user'])->get();
+
+        // Filter to include only those clients with `clientUser` (non-admin users)
+        $filteredRecords = $records->filter(fn($client) => $client->user && !$client->user->isAdmin);
+
+        // Sort the filtered collection by `latestLogout->created_at` in PHP
+        $sortedRecords = $filteredRecords->sortByDesc(fn($client) => $client->latestLogout->created_at ?? null);
 
         if ($paginate) {
             $perPage = $limit ?? 5;
