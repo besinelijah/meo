@@ -42,18 +42,17 @@ class History extends Model
                     $query->select('client_id', 'created_at');
                 },
                 'user'
-            ])
-            ->orderBy('latestLogout.created_at', 'desc'); // Order by latest logout date descending
-
-        if (!is_null($limit)) {
-            $records->limit($limit);
-        }
+            ]);
 
         if ($paginate) {
             $perPage = $limit ?? 5;
-            return $records->paginate($perPage, ['*'], 'page', $page);
+            $paginated = $records->paginate($perPage, ['*'], 'page', $page);
+            $paginated->getCollection()->transform(function ($client) {
+                return $client;
+            });
+            return $paginated;
         }
 
-        return $records->get();
+        return $records->get()->sortByDesc(fn($client) => $client->latestLogout->created_at ?? null)->values();
     }
 }
