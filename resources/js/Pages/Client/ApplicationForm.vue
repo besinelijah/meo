@@ -14,23 +14,23 @@ const renewalImg = '/storage/images/renewal.png';
         <hr class="border-gray-300 mb-6" />
         <div class="card">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-sky-500 m-auto">
+                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 custom-coral m-auto">
                     <Link :href="route('businesspermitform')" class="overflow-hidden rounded-lg shadow-lg">
-                    <img class="w-full h-50 object-cover bg-sky-500" :src="businessPermitImg"
+                    <img class="w-full h-50 object-cover custom-coral" :src="businessPermitImg"
                         alt="Business Permit Image" />
                     <p class="text-center text-white mt-2"> Business Permit</p>
                     </Link>
                 </div>
-                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-blue-800 m-auto">
+                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 custom-yellow m-auto">
                     <Link :href="route('buildingpermitform')" class="overflow-hidden rounded-lg shadow-lg">
-                    <img class="w-full h-50 object-cover bg-blue-800" :src="bldgPermitImg"
+                    <img class="w-full h-50 object-cover custom-yellow" :src="bldgPermitImg"
                         alt="Building Permit Image" />
                     <p class="text-center text-white mt-2"> Building Permit</p>
                     </Link>
                 </div>
-                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 bg-red-800 m-auto">
+                <div class="overflow-hidden rounded-lg shadow-lg m-5 p-6 custom-teal m-auto">
                     <Link :href="route('renewalform')" class="overflow-hidden rounded-lg shadow-lg">
-                    <img class="w-full h-50 object-cover bg-red-800" :src="renewalImg"
+                    <img class="w-full h-50 object-cover custom-teal" :src="renewalImg"
                         alt="Renewal Business Permit Image" />
                     <p class="text-center text-white mt-2"> Business Permit Renewal</p>
                     </Link>
