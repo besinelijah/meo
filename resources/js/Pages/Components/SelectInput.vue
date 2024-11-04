@@ -77,19 +77,19 @@ function toggleTooltip() {
     </div>
 </template>
 <style scoped>
-/* Optional: Positioning for the tooltip */
-.tooltip {
-    position: absolute;
-    z-index: 10;
-}
-
 .custom-dropdown {
     height: auto; /* default height for the closed dropdown */
 }
 
 /* Style the dropdown list when open */
 .custom-dropdown option {
-    max-height: 150px; /* Adjust to control the visible height of the dropdown list */
+    max-height: 100px; /* Adjust to control the visible height of the dropdown list */
     overflow-y: auto; /* Enable scroll if options exceed max-height */
+}
+
+/* Optional: Positioning for the tooltip */
+.tooltip {
+    position: absolute;
+    z-index: 10;
 }
 </style>
