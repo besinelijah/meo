@@ -9,15 +9,26 @@ function formatDate(date) {
 }
 
 const props = defineProps({
-    data: [Object, Array],
+    data: {
+        type: Object,
+        required: true,
+        default: () => ({ history: [] }) // Fallback to an empty array if history is undefined
+    },
 });
+
+// Log the data to check for debugging
+console.log("Original Data:", props.data.history);
 
 // Computed property to sort history data by `latest_logout` in descending order
 const sortedHistory = computed(() => {
-    return [...props.data.history].sort((a, b) => {
-        return new Date(b.latest_logout) - new Date(a.latest_logout);
-    });
+    // Ensure data.history is an array before sorting
+    return Array.isArray(props.data.history) 
+        ? [...props.data.history].sort((a, b) => new Date(b.latest_logout) - new Date(a.latest_logout))
+        : [];
 });
+
+// Log sorted data to check if it has values
+console.log("Sorted History:", sortedHistory.value);
 </script>
 
 <template>
@@ -44,6 +55,7 @@ const sortedHistory = computed(() => {
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Use sortedHistory here -->
                     <template v-for="(item, index) in sortedHistory" :key="index">
                         <tr class="border-y text-sm text-gray-900">
                             <td class="!py-2">{{ item.fname }}</td>
@@ -52,6 +64,7 @@ const sortedHistory = computed(() => {
                     </template>
                 </tbody>
             </table>
+            <!-- Display message if no data is available -->
             <div
                 v-if="sortedHistory.length < 1"
                 class="w-full bg-gray-100 text-center text-sm p-5"
