@@ -15,6 +15,10 @@ defineProps({
     message: {
         type: String
     },
+    readonly: {
+        type: Boolean,
+        default: false
+    },
     isUppercase: {
         type: Boolean,
         default: false
@@ -29,6 +33,7 @@ const emit = defineEmits(['update:modelValue']);
         <input 
             :type="type" 
             :value="modelValue"
+            :readonly="readonly"
             @input="$emit('update:modelValue', $event.target.value)"
             :class="{'!ring-red-500' : message, 'uppercase' : isUppercase}"
         >

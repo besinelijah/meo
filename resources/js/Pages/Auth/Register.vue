@@ -134,8 +134,8 @@ function selectOptionBrgy(optionBrgy) {
                             <span v-if="formData.errors.sex" class="text-red-500 text-sm">{{ formData.errors.sex }}</span>
                         </div>
 
-                        <TextInput name="Province" v-model:modelValue="formData.province" :message="formData.errors.province" />
-                        <TextInput name="Municipality" v-model:modelValue="formData.municipality" :message="formData.errors.municipality" />
+                        <TextInput name="Province" v-model:modelValue="formData.province" :message="formData.errors.province" :readonly="true" />
+                        <TextInput name="Municipality" v-model:modelValue="formData.municipality" :message="formData.errors.municipality" :readonly="true" />
                         <div @click="toggleDropdownBrgy" >
                             Barangay
                             <div v-if="!isOpenBrgy" class="slectBox">{{ selectedOptionBrgy }}</div>
