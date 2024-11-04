@@ -42,8 +42,8 @@ class History extends Model
                     $query->select('client_id', 'created_at');
                 },
                 'user'
-            ]
-        );
+            ])
+            ->orderBy('latest_logout.created_at', 'desc'); // Order by latest_logout date descending
 
         if (!is_null($limit)) {
             $records->limit($limit);
@@ -51,9 +51,6 @@ class History extends Model
 
         if ($paginate) {
             $perPage = $limit ?? 5;
-            if ($page != 1) {
-                // dd($page);
-            }
             $paginated = $records->paginate($perPage, ['*'], 'page', $page);
 
             return $paginated;
