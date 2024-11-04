@@ -36,21 +36,31 @@ class History extends Model
         bool $paginate = false,
         ?int $page = 1
     ) {
+        // Fetch the clients with `clientUser` and `latestLogout` relationships
         $records = Client::whereHas('clientUser')
             ->with([
-                'latestLogout', // Now configured to avoid ambiguity
+                'latestLogout', // Eager-load `latestLogout`
                 'user'
-            ]);
+            ])
+            ->get(); // Retrieve all records, without attempting SQL sorting
+        
+        // Sort by `latestLogout->created_at` in PHP
+        $sortedRecords = $records->sortByDesc(fn($client) => $client->latestLogout->created_at ?? null);
 
         if ($paginate) {
             $perPage = $limit ?? 5;
-            $paginated = $records->paginate($perPage, ['*'], 'page', $page);
-            $paginated->getCollection()->transform(function ($client) {
-                return $client;
-            });
-            return $paginated;
+
+            // Paginate the sorted collection in PHP
+            $currentPageItems = $sortedRecords->slice(($page - 1) * $perPage, $perPage)->values();
+            return new \Illuminate\Pagination\LengthAwarePaginator(
+                $currentPageItems,
+                $sortedRecords->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
         }
 
-        return $records->get()->sortByDesc(fn($client) => $client->latestLogout->created_at ?? null)->values();
+        return $sortedRecords->values();
     }
 }
