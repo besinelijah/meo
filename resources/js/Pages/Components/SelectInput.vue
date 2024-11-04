@@ -67,7 +67,7 @@ function toggleTooltip() {
             </span>
         </label>
         <select :name="name" :value="internalValue" @change="updateValue"
-            class="custom-dropdown block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white">
+            class="block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white">
             <option :value="option.value" v-for="option in options" :key="option.details">
                 {{ option.label }}
             </option>
@@ -77,11 +77,6 @@ function toggleTooltip() {
     </div>
 </template>
 <style scoped>
-.custom-dropdown {
-    max-height: 100px; /* Adjust to control the visible height of the dropdown list */
-    overflow-y: auto; /* Enable scroll if options exceed max-height */
-}
-
 /* Optional: Positioning for the tooltip */
 .tooltip {
     position: absolute;
