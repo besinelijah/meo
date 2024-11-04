@@ -60,7 +60,7 @@ function formatDateTime(date) {
 			<tbody>
 				<template v-for="(item, index) in records.data" :key="index">
 					<tr class="border-y text-sm text-gray-900">
-						<td class="!py-2">{{ String(item.id).padStart(6, '0') }}</td>
+						<!-- <td class="!py-2">{{ String(item.id).padStart(6, '0') }}</td> -->
 						<td class="!py-2">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
 						<td class="!py-2">{{ formatDate(item.created_at) }}</td>
 						<td class="!py-2">{{ formatDateTime(item.latest_logout) }}</td>
