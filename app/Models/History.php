@@ -43,7 +43,7 @@ class History extends Model
                 },
                 'user'
             ])
-            ->orderBy('latest_logout.created_at', 'desc'); // Order by latest_logout date descending
+            ->orderBy('latestLogout.created_at', 'desc'); // Order by latest logout date descending
 
         if (!is_null($limit)) {
             $records->limit($limit);
@@ -51,9 +51,7 @@ class History extends Model
 
         if ($paginate) {
             $perPage = $limit ?? 5;
-            $paginated = $records->paginate($perPage, ['*'], 'page', $page);
-
-            return $paginated;
+            return $records->paginate($perPage, ['*'], 'page', $page);
         }
 
         return $records->get();

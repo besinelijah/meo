@@ -36,7 +36,7 @@ class Client extends Model
     {
         return $this->hasOne(Log::class, 'client_id', 'id')
             ->where('description', 'logout')
-            ->latest('id');
+            ->latestOfMany('created_at'); 
     }
 
 
