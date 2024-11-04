@@ -23,6 +23,10 @@ defineProps({
         type: Boolean,
         default: false
     },
+    placeholder: {  // Add placeholder prop here
+        type: String,
+        default: ""   // Optional default value
+    },
 })
 const emit = defineEmits(['update:modelValue']);
 </script>
@@ -34,6 +38,7 @@ const emit = defineEmits(['update:modelValue']);
             :type="type" 
             :value="modelValue"
             :readonly="readonly"
+            :placeholder="placeholder"
             @input="$emit('update:modelValue', $event.target.value)"
             :class="{'!ring-red-500' : message, 'uppercase' : isUppercase}"
         >
