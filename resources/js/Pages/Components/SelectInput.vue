@@ -67,8 +67,7 @@ function toggleTooltip() {
             </span>
         </label>
         <select :name="name" :value="internalValue" @change="updateValue"
-            size="10"
-            class="block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white">
+            class="custom-dropdown block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white">
             <option :value="option.value" v-for="option in options" :key="option.details">
                 {{ option.label }}
             </option>
@@ -82,5 +81,15 @@ function toggleTooltip() {
 .tooltip {
     position: absolute;
     z-index: 10;
+}
+
+.custom-dropdown {
+    height: auto; /* default height for the closed dropdown */
+}
+
+/* Style the dropdown list when open */
+.custom-dropdown option {
+    max-height: 150px; /* Adjust to control the visible height of the dropdown list */
+    overflow-y: auto; /* Enable scroll if options exceed max-height */
 }
 </style>
