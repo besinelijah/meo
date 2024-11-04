@@ -10,7 +10,7 @@ export default {
       colors: {
         'custom-coral': '#F7957B',
         'custom-yellow': '#FFD07E',
-        'custom-teal': '88e7d1',
+        'custom-teal': '#88E7D1',
       },
     },
   },
