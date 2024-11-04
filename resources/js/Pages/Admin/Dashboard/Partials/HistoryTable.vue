@@ -1,25 +1,13 @@
 <script setup>
 import moment from 'moment';
-
-// Format the date for display
 function formatDate(date) {
-    if (date == null) {
-        return null;
-    }
-    return moment(date.created_at).format('MMMM DD, YYYY, h:mm:ss a');
+	if (date == null) {
+		return null
+	}
+	return moment(date.created_at).format('MMMM DD, YYYY, h:mm:ss a');
 }
-
-// Define props
 const props = defineProps({
-    data: {
-        type: [Object, Array],
-        required: true
-    },
-});
-
-// Computed property to sort history data by `latest_logout` in descending order
-const sortedHistory = computed(() => {
-    return [...props.data.history].sort((a, b) => new Date(b.latest_logout) - new Date(a.latest_logout));
+	data: [Object, Array],
 });
 </script>
 
@@ -47,8 +35,7 @@ const sortedHistory = computed(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Use sortedHistory instead of data.history -->
-                    <template v-for="(item, index) in sortedHistory" :key="index">
+                    <template v-for="(item, index) in data.history" :key="index">
                         <tr class="border-y text-sm text-gray-900">
                             <td class="!py-2">{{ item.fname }}</td>
                             <td class="!py-2">{{ formatDate(item.latest_logout) }}</td>
@@ -56,12 +43,12 @@ const sortedHistory = computed(() => {
                     </template>
                 </tbody>
             </table>
-            <div
-                v-if="sortedHistory.length < 1"
-                class="w-full bg-gray-100 text-center text-sm p-5"
-            >
-                No data available
-            </div>
+      <div
+        v-if="data.history.length < 1"
+        class="w-full bg-gray-100 text-center text-sm p-5"
+      >
+        No data available
+      </div>
         </div>
     </div>
 </template>
