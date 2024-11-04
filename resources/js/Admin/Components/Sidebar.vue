@@ -75,6 +75,7 @@ onMounted(() => {
                     <span class="ms-3">Upload Files</span>
                 </Link>
             </li>
+            <!--
             <li>
                 <Link
                     @click="clear"
@@ -86,6 +87,7 @@ onMounted(() => {
                     <span class="ms-3">Document Request</span>
                 </Link>
             </li>
+            -->
             <li>
                 <Link
                     @click="clear"
