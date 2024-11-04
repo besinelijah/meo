@@ -51,7 +51,7 @@ function formatDateTime(date) {
 		<table class="w-full text-sm text-left">
 			<thead class="text-md text-gray-700 uppercase">
 				<tr>
-					<th class="w-[170px]">Employee ID</th>
+					<!-- <th class="w-[170px]">Employee ID</th> -->
 					<th>Display Name</th>
 					<th>Date Registered</th>
 					<th>Last Seen</th>
