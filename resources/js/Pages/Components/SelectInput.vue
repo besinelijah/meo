@@ -68,7 +68,7 @@ function toggleTooltip() {
         </label>
         <select :name="name" :value="internalValue" @change="updateValue"
             class="block w-full rounded-md border-0 p-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm bg-white"
-            style="max-height: 200px; overflow-y: auto;" >
+            style="max-height: 100px; overflow-y: auto;" >
             <option :value="option.value" v-for="option in options" :key="option.details">
                 {{ option.label }}
             </option>
