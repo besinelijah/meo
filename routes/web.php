@@ -135,7 +135,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/email', 'emailRequest')->name('email');
                 Route::post('/send-email', 'sendEmail')->name('send-email');
         });
-        Route::post('/approval/getRecords', [ApprovalController::class,'getRecord'])->name('approval.getrecord');
+        Route::post('/approval/getRecord', [ApprovalController::class,'getRecord'])->name('approval.getrecord');
 
         Route::prefix('/approval')
             ->controller(ApprovalController::class)
