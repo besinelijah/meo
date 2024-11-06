@@ -67,7 +67,7 @@ const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
         if (file.type !== "application/pdf") {
-            toast.error("File must not be in PDF Form!");
+            toast.error("File must be in PDF Form!");
             return;
         }
         emit("file-selected", { file, inputId: props.inputId });

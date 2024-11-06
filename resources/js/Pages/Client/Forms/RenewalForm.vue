@@ -10,6 +10,7 @@ import TextInput from "../../Components/TextInput.vue";
 import PdfContainer from "../../Components/PdfContainer.vue";
 import Pagination from "../../../Components/Pagination.vue";
 import FileAction from "../../Components/FileAction.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     requirements: [Object, Array],
