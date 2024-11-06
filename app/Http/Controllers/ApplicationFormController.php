@@ -155,4 +155,15 @@ class ApplicationFormController extends Controller
             'fileApprove'=>$isApprove
         ]);
     }
+    public function returned($title, $id){
+        $isApprove = ApplicationDocument::with(['form','requirement'])->where('application_form_id',$id)->get();
+        $requirements = Requirement::getRequirements(5, 1);
+        
+        // $record = Requirement::getRequirementsWithApplicationForm($id, $clientId, 5, $type);
+        return Inertia::render('Client/return',[
+            'title'=>$title,
+            'datas'=>$isApprove,
+            'requirements'=>$requirements    
+        ]);
+    }
 }

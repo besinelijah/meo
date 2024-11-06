@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/my-application-forms')->group(function () {
         Route::get('/', [ApplicationFormController::class, 'getSubmittedForms'])->name('my-application-forms');
         Route::get('/getRecord', [ApplicationFormController::class, 'getRecord'])->name('my-application-forms-record');
+        Route::get('/returned/{title}/{id}', [ApplicationFormController::class, 'returned'])->name('returned');
         // Route::get('/getRecord', [ApplicationFormController::class, 'getSubmittedForms']);
     });
     
@@ -134,6 +135,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/email', 'emailRequest')->name('email');
                 Route::post('/send-email', 'sendEmail')->name('send-email');
         });
+        Route::post('/approval/getRecords', [ApprovalController::class,'getRecord'])->name('approval.getrecord');
 
         Route::prefix('/approval')
             ->controller(ApprovalController::class)
@@ -142,7 +144,6 @@ Route::middleware('auth')->group(function () {
                Route::get('/search','search')->name('approval.search');
                 Route::get('/', 'index')->name('approval.index');
                 Route::post('/changeStatus', 'changeStatus')->name('approval.changestatus');
-                Route::post('/getRecord', 'getRecord')->name('approval.getrecord');
                 Route::get('/getRecord', 'index')->name('approval.getrecord.index');
                 Route::post('/addDocumentRemarks', 'addDocumentRemarks')->name('approval.addDocumentRemarks');
         });

@@ -99,8 +99,8 @@ function getRecord(id, type, clientId) {
         formData.type = type;
         formData.clientId = clientId;
     }
-
-    formData.post("/admin/approval/getRecord");
+    console.log("MyData")
+    formData.post("/admin/approval/getRecords");
 }
 
 // Toggle reject modal
@@ -191,7 +191,7 @@ onMounted(() => {
             formData.id = localStorage.getItem("localID");
             formData.type = localStorage.getItem("localtype");
             formData.clientId = localStorage.getItem("clientID");
-            formData.post("/admin/approval/getRecord");
+            formData.post("/admin/approval/getRecords");
         }
     }
     hasContent.value = inputText.value.length > 0;
