@@ -28,6 +28,137 @@ function getType(type) {
 function formatDate(date) {
     return moment(date).format("MMMM DD, YYYY h:mm a");
 }
+
+// Reactive variables
+const openMenuIndex = ref(null);
+const toggleMenu = (index) => {
+    openMenuIndex.value = openMenuIndex.value === index ? null : index;
+};
+
+// Form data for changing status
+const formData = useForm({
+    id: null,
+    status: null,
+    type: null,
+    isNew: null,
+    clientId: null,
+    remarks: null,
+    data: null,
+});
+
+// Function to change status
+function changeStatus(id, status, type, isSubmit = true, remarks = null, data) {
+    formData.id = id;
+    formData.status = status;
+    formData.type = type;
+    formData.remarks = remarks;
+    formData.data = data;
+
+    if (isSubmit) {
+        submitForm();
+    }
+}
+
+// Function to submit the form
+function submitForm() {
+    formData.post(route("admin.approval.changestatus"));
+}
+
+// Function to get a record
+function getRecord(id, type, clientId) {
+    localStorage.setItem("localID", id);
+    localStorage.setItem("localtype", type);
+    localStorage.setItem("clientID", clientId);
+    if (
+        localStorage.getItem("localID") ||
+        localStorage.getItem("localtype") ||
+        localStorage.getItem("clientID")
+    ) {
+        formData.id = localStorage.getItem("localID");
+        formData.type = localStorage.getItem("localtype");
+        formData.clientId = localStorage.getItem("clientID");
+    } else {
+        formData.id = id;
+        formData.type = type;
+        formData.clientId = clientId;
+    }
+
+    formData.post("/admin/approval/getRecord");
+}
+
+// Toggle reject modal
+const showRejectModal = ref(false);
+function toggleRejectModal() {
+    showRejectModal.value = !showRejectModal.value;
+}
+const searchQuery = ref(""); // Search query
+
+// Get the name of the person who checked the record
+function checkedBy(checkedBy) {
+    if (checkedBy != null) {
+        return checkedBy.lname + ", " + checkedBy.fname + " " + checkedBy.mname;
+    }
+    return "";
+}
+const inputText = ref("");
+const hasContent = ref(true);
+const searchData = ref([]);
+
+const handleInput = async (e) => {
+    const response = await axios.get("approval/search", {
+        params: {
+            search: inputText.value,
+        },
+    });
+    console.log(response.data);
+    hasContent.value = response.data.length > 0;
+    searchData.value = response.data;
+    if (inputText.value.length < 1) {
+        hasContent.value = 0;
+    }
+};
+
+const sortColumn = ref("application_date");
+const sortOrder = ref("asc");
+const sortedQueue = computed(() => {
+    const data = [...filteredQueue.value];
+    return data.sort((a, b) => {
+        const aValue = a[sortColumn.value];
+        const bValue = b[sortColumn.value];
+        if (aValue === null || aValue === undefined) return 1;
+        if (bValue === null || bValue === undefined) return -1;
+
+        return sortOrder.value === "asc"
+            ? aValue > bValue
+                ? 1
+                : -1
+            : aValue < bValue
+            ? 1
+            : -1;
+    });
+});
+const updateSort = (column) => {
+    sortOrder.value =
+        sortColumn.value === column && sortOrder.value === "asc"
+            ? "desc"
+            : "asc";
+    sortColumn.value = column;
+};
+onMounted(() => {
+    if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+        if (
+            localStorage.getItem("localID") ||
+            localStorage.getItem("localtype") ||
+            localStorage.getItem("clientID")
+        ) {
+            formData.id = localStorage.getItem("localID");
+            formData.type = localStorage.getItem("localtype");
+            formData.clientId = localStorage.getItem("clientID");
+            formData.post("/admin/approval/getRecord");
+        }
+    }
+    hasContent.value = inputText.value.length > 0;
+});
 </script>
 
 <template>
@@ -41,32 +172,13 @@ function formatDate(date) {
                 <table class="w-full text-sm text-left">
                     <thead class="text-md text-gray-700 uppercase">
                         <tr>
-                            <th class="cursor-pointer">
-                                <i class="fas fa-arrow-up"></i>
-                                <i class="fas fa-arrow-down"></i>
-                                Type of Permit
-                            </th>
-                            <th class="cursor-pointer">
-                                <i class="fas fa-arrow-up"></i>
-                                <i class="fas fa-arrow-down"></i>
-                                Name of Owner
-                            </th>
-                            <th class="cursor-pointer">
-                                <i class="fas fa-arrow-up"></i>
-                                <i class="fas fa-arrow-down"></i>
-                                Project Title
-                            </th>
-                            <th class="cursor-pointer">
-                                <i class="fas fa-arrow-up"></i>
-                                <i class="fas fa-arrow-down"></i>
-                                Application Date
-                            </th>
+                            <th>Type of Permit</th>
+                            <th>Name of Owner</th>
+                            <th>Project Title</th>
+                            <th>Application Date</th>
                             <th>Remarks</th>
-                            <th class="cursor-pointer">
-                                <i class="fas fa-arrow-up"></i>
-                                <i class="fas fa-arrow-down"></i>
-                                Status
-                            </th>
+                            <th>Status</th>
+                            <th>View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +191,7 @@ function formatDate(date) {
                                     {{ item.client.mname }}
                                 </td>
                                 <td>{{ item.project_title }}</td>
-                                <td>{{ formatDate(item.application_date) }}</td>
+                                <td>{{ formatDate(item.created_at) }}</td>
                                 <td>{{ item.remarks }}</td>
                                 <td class="!py-2 whitespace-nowrap">
 								<span class="p-2 rounded" :class="{
@@ -94,7 +206,21 @@ function formatDate(date) {
 									}"></i>
 									{{ item.status }}
 								</span>
-							</td>
+							    </td>
+                                <td class="!py-2">
+                                    <button
+                                        @click="
+                                            getRecord(
+                                                item.id,
+                                                item.type,
+                                                item.client_id
+                                            )
+                                        "
+                                        class="p-2 text-gray-600 hover:text-gray-900 relative"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr class="border-y text-sm text-gray-900"></tr>
                         </template>
