@@ -1,5 +1,5 @@
 <script setup>
-import { ref,watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { useToast } from "vue-toastification";
 import { useForm } from "@inertiajs/inertia-vue3";
 import ClientLayout from "../../../Shared/ClientLayout.vue";
@@ -10,7 +10,7 @@ import TextInput from "../../Components/TextInput.vue";
 import PdfContainer from "../../Components/PdfContainer.vue";
 import Pagination from "../../../Components/Pagination.vue";
 import FileAction from "../../Components/FileAction.vue";
-
+import Swal from "sweetalert2";
 const props = defineProps({
     requirements: [Object, Array],
 });
@@ -152,11 +152,11 @@ const selectOptions = [
     },
 ];
 const selectedOption = ref("");
-const title = ref('');
+const title = ref("");
 const selectError = ref("");
 const handlePdfTitle = ({ label }) => {
-	title.value = label;
-}
+    title.value = label;
+};
 const selectedradioOption = ref(1);
 const radioError = ref("");
 const radioOptions = [
@@ -166,7 +166,7 @@ const radioOptions = [
 
 const handleDownload = ({ downloadableFile }) => {
     pdfDownloadUrl.value = downloadableFile;
-    console.log(downloadableFile)
+    console.log(downloadableFile);
     showPDFtemplate.value = true;
 };
 
@@ -209,24 +209,42 @@ const prepareFormData = () => {
 
 const submit = () => {
     const data = prepareFormData();
-    if(formData.project_title==null){
-        toast.warning("Title must not be Empty!");
-        return;
-    }
-    if(formData.category==null){
-        toast.warning("Category must not be Empty!");
-        return;
-    }
-    console.log(data);
-    formData.post("/applicationform/store", {
-        data: data,
-        headers: { "Content-Type": "multipart/form-data" },
-        onError(error) {
-            toast.warning("Business Permit Form must Upload a file!");
-            
-            console.log(error);
-        },
-        onSuccess(response) {},
+    Swal.fire({
+        title: "Confirm Upload",
+        text: "Are you sure you want to upload this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Upload It!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (formData.project_title == null) {
+                toast.warning("Title must not be Empty!");
+                return;
+            }
+            if (formData.category == null) {
+                toast.warning("Category must not be Empty!");
+                return;
+            }
+            console.log(data);
+            formData.post("/applicationform/store", {
+                data: data,
+                headers: { "Content-Type": "multipart/form-data" },
+                onError(error) {
+                    toast.warning("Business Permit Form must Upload a file!");
+
+                    console.log(error);
+                },
+                onSuccess(response) {
+                    // Swal.fire({
+                    //     title:'Success',
+                    //     icon:'success',
+                    //     text:'Application form Uploaded Successfully!'
+                    // })
+                },
+            });
+        }
     });
 };
 
@@ -273,11 +291,10 @@ function checkFileUpload(inputId) {
 
     return false;
 }
-var titles = localStorage.getItem('title')
-watchEffect(()=>{
-    titles = localStorage.getItem('title') || "Default"
-})
-
+var titles = localStorage.getItem("title");
+watchEffect(() => {
+    titles = localStorage.getItem("title") || "Default";
+});
 </script>
 
 <template>
@@ -344,9 +361,8 @@ watchEffect(()=>{
                     v-if="isCurrentSubCategory(item.subcategory_name, index)"
                 >
                     {{ item.subcategory_name }}
-                   
                 </p>
-              
+
                 <FileAction
                     :label="item.requirements_name"
                     :title="item.requirements_name"

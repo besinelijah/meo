@@ -130,8 +130,8 @@ const handleInput = async (e) => {
     console.log(response.data);
     hasContent.value = response.data.length > 0;
     searchData.value = response.data;
-    if(inputText.value.length<1){
-        hasContent.value=0
+    if (inputText.value.length < 1) {
+        hasContent.value = 0;
     }
 };
 // Search bar functionality
@@ -155,7 +155,32 @@ const filteredQueue = computed(() => {
         );
     });
 });
+const sortColumn = ref("application_date");
+const sortOrder = ref("asc");
+const sortedQueue = computed(() => {
+    const data = [...filteredQueue.value];
+    return data.sort((a, b) => {
+        const aValue = a[sortColumn.value];
+        const bValue = b[sortColumn.value];
+        if (aValue === null || aValue === undefined) return 1;
+        if (bValue === null || bValue === undefined) return -1;
 
+        return sortOrder.value === "asc"
+            ? aValue > bValue
+                ? 1
+                : -1
+            : aValue < bValue
+            ? 1
+            : -1;
+    });
+});
+const updateSort = (column) => {
+    sortOrder.value =
+        sortColumn.value === column && sortOrder.value === "asc"
+            ? "desc"
+            : "asc";
+    sortColumn.value = column;
+};
 onMounted(() => {
     if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
         if (
@@ -187,118 +212,177 @@ onMounted(() => {
         </div>
         <div v-if="hasContent">
             <!-- Table -->
-            <div  style="height: 350px; overflow-y: scroll;">
-				<table class="w-full text-sm text-left">
-                <thead class="text-md text-gray-700 uppercase">
-                    <tr>
-                        <th class="w-[170px]">Type of Permit</th>
-                        <th>Name of Owner</th>
-                        <th>Project Title</th>
-                        <th>Application Date</th>
-                        <th>Remarks</th>
-                        <th>Status</th>
-                        <th>Checked By</th>
-                        <th>View</th>
-                    </tr>
-                </thead>
-                <tbody >
-                    <template
-                        v-for="(item, index) in searchData"
-                        :key="index"
-                    >
-                        <tr class="border-y text-sm text-gray-900">
-                            <td class="!py-2">{{ getType(item.type) }}</td>
-                            <td class="!py-2">
-                                {{ item.client.lname }}, {{ item.client.fname }}
-                                {{ item.client.mname }}
-                            </td>
-                            <td class="!py-2">
-                                {{ item.project_title.toUpperCase() }}
-                            </td>
-                            <td class="!py-2">
-                                {{ formatDate(item.created_at) }}
-                            </td>
-                            <td class="!py-2">{{ item.remarks }}</td>
-                            <td class="!py-2 whitespace-nowrap">
-                                <span
-                                    class="p-2 rounded"
-                                    :class="{
-                                        'bg-green-100':
-                                            item.status == 'Approved',
-                                        'bg-red-100': item.status == 'Rejected',
-                                        'bg-yellow-100':
-                                            item.status == 'Pending',
-                                        'bg-orange-100':
-                                            item.status == 'Returned',
-                                    }"
-                                >
-                                    <i
-                                        class="mr-2"
+            <div style="height: 350px; overflow-y: scroll">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-md text-gray-700 uppercase">
+                        <tr>
+                            <th
+                                @click="updateSort('type')"
+                                class="cursor-pointer"
+                            >
+                                Type of Permit
+                            </th>
+                            <th
+                                @click="updateSort('client_name')"
+                                class="cursor-pointer"
+                            >
+                                Name of Owner
+                            </th>
+                            <th
+                                @click="updateSort('project_title')"
+                                class="cursor-pointer"
+                            >
+                                Project Title
+                            </th>
+                            <th
+                                @click="updateSort('created_at')"
+                                class="cursor-pointer"
+                            >
+                                Application Date
+                            </th>
+                            <th>Remarks</th>
+                            <th
+                                @click="updateSort('status')"
+                                class="cursor-pointer"
+                            >
+                                Status
+                            </th>
+                            <th>Checked By</th>
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template
+                            v-for="(item, index) in searchData"
+                            :key="index"
+                        >
+                            <tr class="border-y text-sm text-gray-900">
+                                <td class="!py-2">{{ getType(item.type) }}</td>
+                                <td class="!py-2">
+                                    {{ item.client.lname }},
+                                    {{ item.client.fname }}
+                                    {{ item.client.mname }}
+                                </td>
+                                <td class="!py-2">
+                                    {{ item.project_title.toUpperCase() }}
+                                </td>
+                                <td class="!py-2">
+                                    {{ formatDate(item.created_at) }}
+                                </td>
+                                <td class="!py-2">{{ item.remarks }}</td>
+                                <td class="!py-2 whitespace-nowrap">
+                                    <span
+                                        class="p-2 rounded"
                                         :class="{
-                                            'fas fa-check-circle text-green-500':
+                                            'bg-green-100':
                                                 item.status == 'Approved',
-                                            'fas fa-times-circle text-red-500':
+                                            'bg-red-100':
                                                 item.status == 'Rejected',
-                                            'fas fa-hourglass-half text-yellow-500':
+                                            'bg-yellow-100':
                                                 item.status == 'Pending',
-                                            'fas fa-arrow-rotate-left text-orange-500':
+                                            'bg-orange-100':
                                                 item.status == 'Returned',
                                         }"
-                                    ></i>
-                                    {{ item.status }}
-                                </span>
-                            </td>
-                            <td class="!py-2">
-                                {{ checkedBy(item.checked_by) }}
-                            </td>
-                            <td class="!py-2">
-                                <button
-                                    @click="
-                                        getRecord(
-                                            item.id,
-                                            item.type,
-                                            item.client_id
-                                        )
-                                    "
-                                    class="p-2 text-gray-600 hover:text-gray-900 relative"
-                                >
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-          
-			</div>
+                                    >
+                                        <i
+                                            class="mr-2"
+                                            :class="{
+                                                'fas fa-check-circle text-green-500':
+                                                    item.status == 'Approved',
+                                                'fas fa-times-circle text-red-500':
+                                                    item.status == 'Rejected',
+                                                'fas fa-hourglass-half text-yellow-500':
+                                                    item.status == 'Pending',
+                                                'fas fa-arrow-rotate-left text-orange-500':
+                                                    item.status == 'Returned',
+                                            }"
+                                        ></i>
+                                        {{ item.status }}
+                                    </span>
+                                </td>
+                                <td class="!py-2">
+                                    {{ checkedBy(item.checked_by) }}
+                                </td>
+                                <td class="!py-2">
+                                    <button
+                                        @click="
+                                            getRecord(
+                                                item.id,
+                                                item.type,
+                                                item.client_id
+                                            )
+                                        "
+                                        class="p-2 text-gray-600 hover:text-gray-900 relative"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
             <!-- No data available message -->
-            <div v-if="searchData.length<1" class="w-full bg-gray-100 text-center text-sm p-5">
+            <div
+                v-if="searchData.length < 1"
+                class="w-full bg-gray-100 text-center text-sm p-5"
+            >
                 No data available
             </div>
             <!-- Pagination -->
-		
         </div>
-	   <div v-else-if="inputText.length>1 && !hasContent">
+        <div v-else-if="inputText.length > 1 && !hasContent">
             <!-- Table -->
             <table class="w-full text-sm text-left">
                 <thead class="text-md text-gray-700 uppercase">
                     <tr>
-                        <th class="w-[170px]">Type of Permit</th>
-                        <th>Name of Owner</th>
-                        <th>Project Title</th>
-                        <th>Application Date</th>
+                        <th @click="updateSort('type')" class="cursor-pointer">
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Type of Permit
+                        </th>
+                        <th
+                            @click="updateSort('client_name')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Name of Owner
+                        </th>
+                        <th
+                            @click="updateSort('project_title')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Project Title
+                        </th>
+                        <th
+                            @click="updateSort('created_at')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Application Date
+                        </th>
                         <th>Remarks</th>
-                        <th>Status</th>
+                        <th
+                            @click="updateSort('status')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Status
+                        </th>
                         <th>Checked By</th>
                         <th>View</th>
                     </tr>
                 </thead>
-                
             </table>
 
-			<!-- No data available message -->
+            <!-- No data available message -->
             <div
-                v-if="inputText.length>1 && !hasContent"
+                v-if="inputText.length > 1 && !hasContent"
                 class="w-full bg-gray-100 text-center text-sm p-5"
             >
                 No data available
@@ -313,27 +397,56 @@ onMounted(() => {
                 :previousPageUrl="queue.prev_page_url"
                 :nextPageUrl="queue.next_page_url"
             />
-        </div>	
+        </div>
         <div v-else>
             <!-- Table -->
             <table class="w-full text-sm text-left">
                 <thead class="text-md text-gray-700 uppercase">
                     <tr>
-                        <th class="w-[170px]">Type of Permit</th>
-                        <th>Name of Owner</th>
-                        <th>Project Title</th>
-                        <th>Application Date</th>
+                        <th @click="updateSort('type')" class="cursor-pointer">
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Type of Permit
+                        </th>
+                        <th
+                            @click="updateSort('client_name')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Name of Owner
+                        </th>
+                        <th
+                            @click="updateSort('project_title')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Project Title
+                        </th>
+                        <th
+                            @click="updateSort('created_at')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Application Date
+                        </th>
                         <th>Remarks</th>
-                        <th>Status</th>
+                        <th
+                            @click="updateSort('status')"
+                            class="cursor-pointer"
+                        >
+                            <i class="fas fa-arrow-up"></i>
+                            <i class="fas fa-arrow-down"></i>
+                            Status
+                        </th>
                         <th>Checked By</th>
                         <th>View</th>
                     </tr>
                 </thead>
-                <tbody >
-                    <template
-                        v-for="(item, index) in filteredQueue"
-                        :key="index"
-                    >
+                <tbody>
+                    <template v-for="(item, index) in sortedQueue" :key="index">
                         <tr class="border-y text-sm text-gray-900">
                             <td class="!py-2">{{ getType(item.type) }}</td>
                             <td class="!py-2">
@@ -398,7 +511,7 @@ onMounted(() => {
                 </tbody>
             </table>
 
-			<!-- No data available message -->
+            <!-- No data available message -->
             <div
                 v-if="queue.length < 1"
                 class="w-full bg-gray-100 text-center text-sm p-5"

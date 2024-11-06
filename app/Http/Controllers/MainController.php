@@ -30,7 +30,7 @@ class MainController extends Controller
     public function register(RegisterRequest $request)
     {
         $validated = $request->validated();
-
+        
         $client = Client::create([
             'fname' => $validated['fname'],
             'mname' => $validated['mname'] ?? null,
@@ -54,6 +54,34 @@ class MainController extends Controller
         }
 
         return redirect()->route('login.index', ['type' => $validated['type']]);
+    }
+    public function registeradmin(RegisterRequest $request)
+    {
+        $validated = $request->validated();
+        
+        $client = Client::create([
+            'fname' => $validated['fname'],
+            'mname' => $validated['mname'] ?? null,
+            'lname' => $validated['lname'],
+            'sex' => $validated['sex'],
+            'street' => $validated['street'] ?? null,
+            'brgy' => $validated['brgy'],
+            'municipality' => $validated['municipality'],
+            'province' => $validated['province']
+        ]);
+        // die($client->fname);
+        if ($client) {
+            $user = User::create([
+                'client_id' => $client->id,
+                'email' => $validated['email'] ?? null,
+                'password' => $validated['password'],
+                'isAdmin' =>  $validated['type'],
+                'contact_number' =>  $validated['contact_number'],
+                'username' => $validated['fname'],
+            ]);
+        }
+
+        return redirect()->route('admin.showAdmin');
     }
 
     public function login(LoginRequest $request)

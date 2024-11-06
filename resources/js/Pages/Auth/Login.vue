@@ -65,7 +65,8 @@ function goToRegister() {
                     </div>
                     <div class="flex flex-col items-center">
                         <button class="primary-btn">Login</button>
-                        <p class="text-slate-600 mt-2 text-center">
+                        
+                        <p v-if="getType(type)=='User'" class="text-slate-600 mt-2 text-center">
                             Need an account? <a @click="goToRegister" class="text-link cursor-pointer">Signup now</a>
                         </p>
                     </div>

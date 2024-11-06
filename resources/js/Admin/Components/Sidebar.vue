@@ -118,6 +118,16 @@ onMounted(() => {
             </li>
             <li>
                 <Link
+                    class="nav-link"
+                    :href="route('admin.showAdmin')"
+                    :class="{ 'bg-slate-800': route().current('admin.showAdmin') }"
+                >
+                    <i class="fas fa-user w-5 h-5 text-center"></i>
+                    <span class="ms-3">Create Admin</span>
+                </Link>
+            </li>
+            <li>
+                <Link
                     @click="clear"
                     :href="route('admin.history.index')"
                     :class="{ 'bg-slate-800': isHistoryActive }"

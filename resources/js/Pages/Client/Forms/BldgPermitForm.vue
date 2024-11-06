@@ -1,5 +1,5 @@
 <script setup>
-import { ref,watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { useToast } from "vue-toastification";
 import { useForm } from "@inertiajs/inertia-vue3";
 import ClientLayout from "../../../Shared/ClientLayout.vue";
@@ -10,6 +10,7 @@ import TextInput from "../../Components/TextInput.vue";
 import PdfContainer from "../../Components/PdfContainer.vue";
 import Pagination from "../../../Components/Pagination.vue";
 import FileAction from "../../Components/FileAction.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     requirements: [Object, Array],
@@ -23,11 +24,9 @@ const togglePDFformatModal = (event) => {
     showPDFtemplate.value = event;
 };
 
-
 const selectedOption = ref("");
-const title = ref('');
+const title = ref("");
 const selectError = ref("");
-
 
 const selectOptions = [
     {
@@ -159,8 +158,8 @@ const selectOptions = [
     },
 ];
 const handlePdfTitle = ({ label }) => {
-	title.value = label;
-}
+    title.value = label;
+};
 const selectedradioOption = ref(1);
 const radioError = ref("");
 const radioOptions = [
@@ -170,7 +169,7 @@ const radioOptions = [
 
 const handleDownload = ({ downloadableFile }) => {
     pdfDownloadUrl.value = downloadableFile;
-    console.log(downloadableFile)
+    console.log(downloadableFile);
     showPDFtemplate.value = true;
 };
 
@@ -214,24 +213,36 @@ const prepareFormData = () => {
 const submit = () => {
     const data = prepareFormData();
     console.log(data.files);
-    if(formData.project_title==null){
-        toast.warning("Title must not be Empty!");
-        return;
-    }
-    if(formData.category==null){
-        toast.warning("Category must not be Empty!");
-        return;
-    }
-    formData.post("/applicationform/store", {
-        data: data,
-        onError(error) {
-            toast.warning("Building Permit Form must Upload a file!");
+    Swal.fire({
+        title: "Confirm Upload",
+        text: "Are you sure you want to upload this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Upload It!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (formData.project_title == null) {
+                toast.warning("Title must not be Empty!");
+                return;
+            }
+            if (formData.category == null) {
+                toast.warning("Category must not be Empty!");
+                return;
+            }
+            formData.post("/applicationform/store", {
+                data: data,
+                onError(error) {
+                    toast.warning("Building Permit Form must Upload a file!");
 
-            console.log(error);
-        },
-        onSuccess(response) {
-            console.log(response);
-        },
+                    console.log(error);
+                },
+                onSuccess(response) {
+                    console.log(response);
+                },
+            });
+        }
     });
 };
 
@@ -278,11 +289,10 @@ function checkFileUpload(inputId) {
 
     return false;
 }
-var titles = localStorage.getItem('title')
-watchEffect(()=>{
-    titles = localStorage.getItem('title') || "Default"
-})
-
+var titles = localStorage.getItem("title");
+watchEffect(() => {
+    titles = localStorage.getItem("title") || "Default";
+});
 </script>
 
 <template>
@@ -297,7 +307,11 @@ watchEffect(()=>{
             format (.pdf).
         </p>
 
-        <form @submit.prevent="submit" method="POST" enctype="multipart/form-data">
+        <form
+            @submit.prevent="submit"
+            method="POST"
+            enctype="multipart/form-data"
+        >
             <div :class="{ hidden: requirements.current_page != 1 }">
                 <!-- <RadioButton name="Please check(✔)applicable box:" :options="radioOptions"
                     v-model:modelValue="selectedradioOption" :message="radioError"/> -->
@@ -349,9 +363,8 @@ watchEffect(()=>{
                     v-if="isCurrentSubCategory(item.subcategory_name, index)"
                 >
                     {{ item.subcategory_name }}
-                   
                 </p>
-              
+
                 <FileAction
                     :label="item.requirements_name"
                     :title="item.requirements_name"

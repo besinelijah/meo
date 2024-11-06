@@ -42,14 +42,14 @@ const props = defineProps({
         type: Number,
         default: "upload-file",
     },
-    fileData:{
+    fileData: {
         type: Object,
-        default:null
+        default: null,
     },
-    status:{
+    status: {
         type: String,
-        default:null
-    }
+        default: null,
+    },
 });
 const hasUpload = ref(false);
 const fileUploadText = ref("Upload");
@@ -66,8 +66,13 @@ const emit = defineEmits([
 const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+        if (file.type !== "application/pdf") {
+            toast.error("File must not be in PDF Form!");
+            return;
+        }
         emit("file-selected", { file, inputId: props.inputId });
         hasUpload.value = true;
+
         fileUploadText.value = "File Uploaded";
     }
 };
@@ -111,7 +116,7 @@ const removePdfUrl = (inputId) => {
 const formData = useForm({
     id: null,
     remarks: null,
-    approved:0
+    approved: 0,
 });
 
 // Handling approval and disapproval toggles
@@ -119,32 +124,33 @@ let isApprove = ref(false);
 let disApprove = ref(false);
 
 const approve = () => {
-    isApprove.value = !isApprove.value;  // Toggle the value for approval
-    disApprove.value = false;  // Ensure disapproval is turned off
+    isApprove.value = !isApprove.value; // Toggle the value for approval
+    disApprove.value = false; // Ensure disapproval is turned off
     console.log(isApprove.value);
     formData.approved = 1;
 };
 
 const dapprove = () => {
-    disApprove.value = !disApprove.value;  // Toggle the value for disapproval
-    isApprove.value = false;  // Ensure approval is turned off
+    disApprove.value = !disApprove.value; // Toggle the value for disapproval
+    isApprove.value = false; // Ensure approval is turned off
     formData.approved = 2;
-
 };
 const showRemarksModal = ref(false);
 const remarks = ref(null); // To store and display the document remarks
 
 const addRemarks = async () => {
     formData.id = props.documentId;
-  
 
-try {
-        const response = await axios.post("/admin/approval/addDocumentRemarks", {
-            id: formData.id,
-            remarks: formData.remarks,
-            isFileApprove:formData.approved
-        });
-     
+    try {
+        const response = await axios.post(
+            "/admin/approval/addDocumentRemarks",
+            {
+                id: formData.id,
+                remarks: formData.remarks,
+                isFileApprove: formData.approved,
+            }
+        );
+
         if (response.data.success) {
             toast.success(response.data.remarks);
             toggleRemarksModal();
@@ -166,40 +172,40 @@ try {
 function toggleRemarksModal() {
     showRemarksModal.value = !showRemarksModal.value;
 }
-const isDocumentChecked = ref("");  // This will store the result of isCheck
+const isDocumentChecked = ref(""); // This will store the result of isCheck
 
 const isChecks = ref(false); // Use ref to store the result
-const isCheck=  async(id)=>{
-   if(id!=null){
-    const res = await axios.get('/admin/approval/isCheck',{
-        params:{
-            id: id
+const isCheck = async (id) => {
+    if (id != null) {
+        const res = await axios.get("/admin/approval/isCheck", {
+            params: {
+                id: id,
+            },
+        });
+        // isDocumentChecked.value = res.data.is_file_approve == 1;
+        if (res.data.is_file_approve == 1) {
+            isDocumentChecked.value = "check";
+        } else if (res.data.is_file_approve == 2) {
+            isDocumentChecked.value = "wrong";
         }
-    })
-    // isDocumentChecked.value = res.data.is_file_approve == 1; 
-    if(res.data.is_file_approve == 1){
-        isDocumentChecked.value = "check"; 
-    }else if(res.data.is_file_approve == 2){
-        isDocumentChecked.value = "wrong";     
     }
-   }
     // return res.data.is_file_approve;
     // return res.data
-}
+};
 
-const getDocumentId = ()=>{
+const getDocumentId = () => {
     return props.documentId;
-}
-const stat = ref(null)
-const getStatus = ()=>{
-    stat.value = props.status
-}
+};
+const stat = ref(null);
+const getStatus = () => {
+    stat.value = props.status;
+};
 </script>
 
 <template>
     <div class="flex items-center justify-between mb-3">
         <div class="flex-1">{{ label }}</div>
-        
+
         <div class="flex-shrink-0 flex space-x-3">
             <!-- Download Button -->
             <div
@@ -223,7 +229,7 @@ const getStatus = ()=>{
             >
                 {{ getUploadText() }}
             </label>
-{{ getStatus() }}
+            {{ getStatus() }}
 
             <input
                 :id="inputId"
@@ -232,82 +238,101 @@ const getStatus = ()=>{
                 @change="handleFileChange"
                 accept="application/pdf"
             />
-        
-            <div v-if="fileData!=null && status==null" style="display: flex; gap: 5px;">
-                <div
-                v-if="documentId != null"
-                class="flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full cursor-pointer"
-            >
-                <i
-                    class="fa-solid fa-inbox text-white"
-                    @click="toggleRemarksModal"
-                ></i>
-            </div>
-            <div
-                v-if="hasFile != null"
-                class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
-            >
-                <i
-                    class="fa-solid fa-eye text-white"
-                    @click="handlePdfUrl(), handlePdfTitle(), handlePdfRemarks()"
-                ></i>
-            </div>
-           
-            <div
-                v-if="(hasFile != null && isCheck(getDocumentId()) && isDocumentChecked=='check')"
-                class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full"
-            >
-                <i class="fa-solid fa-check text-white text-1xl"></i>
-            </div>
 
             <div
-                v-else-if="isCheck(getDocumentId()) && isDocumentChecked=='wrong'"
-                class="flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
+                v-if="fileData != null && status == null"
+                style="display: flex; gap: 5px"
             >
-                <i class="fa-solid fa-x text-white"></i>
-            </div>
-            </div>
-        
-            <div v-else style="display: flex; gap: 5px;">
                 <div
-                v-if="documentId != null && status==null"
-                class="flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full cursor-pointer"
-            >
-                <i
-                    class="fa-solid fa-inbox text-white"
-                    @click="toggleRemarksModal"
-                ></i>
-            </div>
-        
-            <div
-                v-if="hasFile != null"
-                class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
-            >
-                <i
-                    class="fa-solid fa-eye text-white"
-                    @click="handlePdfUrl(), handlePdfTitle(), handlePdfRemarks()"
-                ></i>
-            </div>
-            <div
-                v-if="(hasFile != null && isCheck(getDocumentId()) && isDocumentChecked=='check')"
-                class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full"
-            >
-                <i class="fa-solid fa-check text-white text-1xl"></i>
+                    v-if="documentId != null"
+                    class="flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full cursor-pointer"
+                >
+                    <i
+                        class="fa-solid fa-inbox text-white"
+                        @click="toggleRemarksModal"
+                    ></i>
+                </div>
+                <div
+                    v-if="hasFile != null"
+                    class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
+                >
+                    <i
+                        class="fa-solid fa-eye text-white"
+                        @click="
+                            handlePdfUrl(), handlePdfTitle(), handlePdfRemarks()
+                        "
+                    ></i>
+                </div>
+
+                <div
+                    v-if="
+                        hasFile != null &&
+                        isCheck(getDocumentId()) &&
+                        isDocumentChecked == 'check'
+                    "
+                    class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full"
+                >
+                    <i class="fa-solid fa-check text-white text-1xl"></i>
+                </div>
+
+                <div
+                    v-else-if="
+                        isCheck(getDocumentId()) && isDocumentChecked == 'wrong'
+                    "
+                    class="flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
+                >
+                    <i class="fa-solid fa-x text-white"></i>
+                </div>
             </div>
 
-            <div
-                v-else-if="isCheck(getDocumentId()) && isDocumentChecked=='wrong'"
-                class="flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
-            >
-                <i class="fa-solid fa-x text-white"></i>
-            </div>
-            <div
-                v-if="hasUploadedFile"
-                @click="removePdfUrl(inputId)"
-                class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
-            >
-                <i class="fas fa-x text-white"></i>
-            </div>
+            <div v-else style="display: flex; gap: 5px">
+                <div
+                    v-if="documentId != null && status == null"
+                    class="flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full cursor-pointer"
+                >
+                    <i
+                        class="fa-solid fa-inbox text-white"
+                        @click="toggleRemarksModal"
+                    ></i>
+                </div>
+
+                <div
+                    v-if="hasFile != null"
+                    class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
+                >
+                    <i
+                        class="fa-solid fa-eye text-white"
+                        @click="
+                            handlePdfUrl(), handlePdfTitle(), handlePdfRemarks()
+                        "
+                    ></i>
+                </div>
+                <div
+                    v-if="
+                        hasFile != null &&
+                        isCheck(getDocumentId()) &&
+                        isDocumentChecked == 'check'
+                    "
+                    class="flex items-center justify-center w-6 h-6 bg-green-500 rounded-full"
+                >
+                    <i class="fa-solid fa-check text-white text-1xl"></i>
+                </div>
+
+                <div
+                    v-else-if="
+                        isCheck(getDocumentId()) && isDocumentChecked == 'wrong'
+                    "
+                    class="flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
+                >
+                    <i class="fa-solid fa-x text-white"></i>
+                </div>
+                <div
+                    v-if="hasUploadedFile"
+                    @click="removePdfUrl(inputId)"
+                    class="flex items-center justify-center w-6 h-6 bg-yellow-500 rounded-full cursor-pointer"
+                >
+                    <i class="fas fa-x text-white"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -378,7 +403,9 @@ const getStatus = ()=>{
                                     'bg-green-200': !isApprove,
                                 }"
                             >
-                                <i class="fa-solid fa-check text-white text-1xl"></i>
+                                <i
+                                    class="fa-solid fa-check text-white text-1xl"
+                                ></i>
                             </div>
                         </div>
                     </div>

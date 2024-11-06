@@ -74,6 +74,7 @@ function changeStatus(id, status, type, isSubmit = true, remarks = null,msg) {
 }
 function submitForm() {
 	// axios.post('admin/approval/changestatus',formData)
+	console.log(formData);
 	formData.post(route('admin.approval.changestatus'));
 }
 function getType(type) {
@@ -195,7 +196,7 @@ function changeAction(title) {
 					:class="{ 'hidden': record.last_page != record.current_page }">
 					<div class="success-btn" @click="changeStatus(form.id, 'Approved', form.type,getType(typeProp))">Approve</div>
 					<div class="warning-btn" @click="changeStatus(form.id, 'Returned', form.type, false,getType(typeProp)), toggleRejectModal(), changeAction('Return')">Return</div>
-					<div class="danger-btn" @click="changeStatus(form.id, 'Rejected', form.type, false,getType(typeProp)), toggleRejectModal(), changeAction('Reject')">Reject</div>
+					<div class="danger-btn" @click="changeStatus(form.id, 'Rejected', form.type, formData.remarks ,getType(typeProp)), toggleRejectModal(), changeAction('Reject')">Reject</div>
 				</div>
 			</div>
 			<!-- Reject modal -->
@@ -216,7 +217,7 @@ function changeAction(title) {
 						</div>
 						<div class="p-4 h-[20vh]">
 
-							<textarea name="Remarks" class="w-full h-15 border border-gray-300 rounded p-2" v-model="formData.remarks"></textarea >
+							<textarea name="Remarks" class="w-full h-15 border border-gray-300 rounded p-2" v-model="form.remarks" @change="()=>{formData.remarks = form.remarks}"></textarea >
 							<div class="mt-5">
 								<button class="primary-btn">Submit</button>
 							</div>

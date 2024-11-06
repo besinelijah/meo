@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import { useToast } from 'vue-toastification'
+import { ref } from "vue";
+import { useToast } from "vue-toastification";
 import { useForm } from "@inertiajs/inertia-vue3";
-import ClientLayout from '../../../Shared/ClientLayout.vue';
-import RadioButton from '../../Components/RadioButton.vue';
-import SelectInput from '../../Components/SelectInput.vue';
+import ClientLayout from "../../../Shared/ClientLayout.vue";
+import RadioButton from "../../Components/RadioButton.vue";
+import SelectInput from "../../Components/SelectInput.vue";
 import Map from "../../Components/Map.vue";
 import TextInput from "../../Components/TextInput.vue";
 import PdfContainer from "../../Components/PdfContainer.vue";
@@ -18,137 +18,154 @@ const props = defineProps({
 const toast = useToast();
 defineOptions({ layout: ClientLayout });
 
-const pdfDownloadUrl = ref('https://example.com/path/to/your/pdf-file.pdf');
+const pdfDownloadUrl = ref("https://example.com/path/to/your/pdf-file.pdf");
 const showPDFtemplate = ref(false);
 const togglePDFformatModal = (event) => {
     showPDFtemplate.value = event;
-}
+};
 const selectOptions = [
     {
-        value: 'Category A — Residential Dwellings',
-        label: 'Category A — Residential Dwellings',
-        details: 'Residential Dwellings'
+        value: "Category A — Residential Dwellings",
+        label: "Category A — Residential Dwellings",
+        details: "Residential Dwellings",
     },
     {
-        value: 'Category B — Residentials, Hotels and Apartments',
-        label: 'Category B — Residentials, Hotels and Apartments',
-        details: 'Multiple dwelling units including boarding or lodging houses, hotels, apartment buildings, row houses, convents, monasteries, and other similar building each of which accommodates more than ten persons.'
+        value: "Category B — Residentials, Hotels and Apartments",
+        label: "Category B — Residentials, Hotels and Apartments",
+        details:
+            "Multiple dwelling units including boarding or lodging houses, hotels, apartment buildings, row houses, convents, monasteries, and other similar building each of which accommodates more than ten persons.",
     },
     {
-        value: 'Category C — Education and Recreation',
-        label: 'Category C — Education and Recreation',
-        details: 'Buildings used for school or day-care purposes, involving assemblage for instruction, education, or recreation, and not classified in Group I or in Division 1 and 2 or Group H Occupancies.'
+        value: "Category C — Education and Recreation",
+        label: "Category C — Education and Recreation",
+        details:
+            "Buildings used for school or day-care purposes, involving assemblage for instruction, education, or recreation, and not classified in Group I or in Division 1 and 2 or Group H Occupancies.",
     },
     {
-        value: 'Category D Division 1 — Institutional',
-        label: 'Category D Division 1 — Institutional',
-        details: 'Mental hospitals, mental sanitaria, jails, prisons, reformatories, and buildings where personal liberties of inmates are similarly restrained'
+        value: "Category D Division 1 — Institutional",
+        label: "Category D Division 1 — Institutional",
+        details:
+            "Mental hospitals, mental sanitaria, jails, prisons, reformatories, and buildings where personal liberties of inmates are similarly restrained",
     },
     {
-        value: 'Category D Division 2 — Institutional',
-        label: 'Category D Division 2 — Institutional',
-        details: 'Nurseries for full-time care of children under kindergarten age, hospitals, sanitaria, nursing homes with non-ambulatory patients, and similar buildings each accommodating more than five persons'
+        value: "Category D Division 2 — Institutional",
+        label: "Category D Division 2 — Institutional",
+        details:
+            "Nurseries for full-time care of children under kindergarten age, hospitals, sanitaria, nursing homes with non-ambulatory patients, and similar buildings each accommodating more than five persons",
     },
     {
-        value: 'Category D Division 3 — Institutional',
-        label: 'Category D Division 3 — Institutional',
-        details: 'Nursing homes for ambulatory patients, homes for children of kindergarten age or over, each accommodating more than five persons: Provided, that Group D Occupancies shall not include buildings used only for private or family group dwelling purposes'
+        value: "Category D Division 3 — Institutional",
+        label: "Category D Division 3 — Institutional",
+        details:
+            "Nursing homes for ambulatory patients, homes for children of kindergarten age or over, each accommodating more than five persons: Provided, that Group D Occupancies shall not include buildings used only for private or family group dwelling purposes",
     },
     {
-        value: 'Category E Division 1 — Business and Mercantile',
-        label: 'Category E Division 1 — Business and Mercantile',
-        details: 'Gasoline filling and service stations, storage garages and boot storage structures where no work is done except exchange of parts and maintenance requiring no open flame, welding, or the use of highly flammable liquids'
+        value: "Category E Division 1 — Business and Mercantile",
+        label: "Category E Division 1 — Business and Mercantile",
+        details:
+            "Gasoline filling and service stations, storage garages and boot storage structures where no work is done except exchange of parts and maintenance requiring no open flame, welding, or the use of highly flammable liquids",
     },
     {
-        value: 'Category E Division 2 — Business and Mercantile',
-        label: 'Category E Division 2 — Business and Mercantile',
-        details: 'Wholesale and retail stores, office buildings, drinking and dining establishments having an occupant load of less than one hundred persons, printing plants, police and fire stations, factories and workshops using not highly flammable or combustible materials and paint stores without bulk handlings'
+        value: "Category E Division 2 — Business and Mercantile",
+        label: "Category E Division 2 — Business and Mercantile",
+        details:
+            "Wholesale and retail stores, office buildings, drinking and dining establishments having an occupant load of less than one hundred persons, printing plants, police and fire stations, factories and workshops using not highly flammable or combustible materials and paint stores without bulk handlings",
     },
     {
-        value: 'Category E Division 3 — Business and Mercantile',
-        label: 'Category E Division 3 — Business and Mercantile',
-        details: 'Aircraft hangars and open parking garage with no repair work is done except exchange of parts and maintenance requiring no open flame, welding or the use of highly flammable liquids'
+        value: "Category E Division 3 — Business and Mercantile",
+        label: "Category E Division 3 — Business and Mercantile",
+        details:
+            "Aircraft hangars and open parking garage with no repair work is done except exchange of parts and maintenance requiring no open flame, welding or the use of highly flammable liquids",
     },
     {
-        value: 'Category F — Industrial',
-        label: 'Category F — Industrial',
-        details: 'Ice plants, power plants, pumping plants, cold storage, and creameries, factories and workshops using incombustible and non-explosive materials, and storage and sale rooms for incombustible and non-explosive materials'
+        value: "Category F — Industrial",
+        label: "Category F — Industrial",
+        details:
+            "Ice plants, power plants, pumping plants, cold storage, and creameries, factories and workshops using incombustible and non-explosive materials, and storage and sale rooms for incombustible and non-explosive materials",
     },
     {
-        value: 'Category G Division 1 — Storage and Hazardous',
-        label: 'Category G Division 1 — Storage and Hazardous',
-        details: 'Storage and handling of hazardous and highly flammable material'
+        value: "Category G Division 1 — Storage and Hazardous",
+        label: "Category G Division 1 — Storage and Hazardous",
+        details:
+            "Storage and handling of hazardous and highly flammable material",
     },
     {
-        value: 'Category G Division 2 — Storage and Hazardous',
-        label: 'Category G Division 2 — Storage and Hazardous',
-        details: 'Storage and handling of flammable materials, dry cleaning plants using flammable liquids; paint stores with bulk handling, paint shops and spray painting rooms.'
+        value: "Category G Division 2 — Storage and Hazardous",
+        label: "Category G Division 2 — Storage and Hazardous",
+        details:
+            "Storage and handling of flammable materials, dry cleaning plants using flammable liquids; paint stores with bulk handling, paint shops and spray painting rooms.",
     },
     {
-        value: 'Category G Division 3 — Storage and Hazardous',
-        label: 'Category G Division 3 — Storage and Hazardous',
-        details: 'Wood working establishments, planning mills and box factories, shops, factories where loose combustible fibers or dust are manufactured, processed or generated; warehouses where highly combustible material is store'
+        value: "Category G Division 3 — Storage and Hazardous",
+        label: "Category G Division 3 — Storage and Hazardous",
+        details:
+            "Wood working establishments, planning mills and box factories, shops, factories where loose combustible fibers or dust are manufactured, processed or generated; warehouses where highly combustible material is store",
     },
     {
-        value: 'Category G Division 4 — Storage and Hazardous',
-        label: 'Category G Division 4 — Storage and Hazardous',
-        details: 'Repair garages'
+        value: "Category G Division 4 — Storage and Hazardous",
+        label: "Category G Division 4 — Storage and Hazardous",
+        details: "Repair garages",
     },
     {
-        value: 'Category G Division 5 — Storage and Hazardous',
-        label: 'Category G Division 5 — Storage and Hazardous',
-        details: 'Aircraft repair hangers'
+        value: "Category G Division 5 — Storage and Hazardous",
+        label: "Category G Division 5 — Storage and Hazardous",
+        details: "Aircraft repair hangers",
     },
     {
-        value: 'Category H Division 1 — Assembly Other Than Group I',
-        label: 'Category H Division 1 — Assembly Other Than Group I',
-        details: 'Any assembly building with a stage and an occupant load of less than 1000 in the building'
+        value: "Category H Division 1 — Assembly Other Than Group I",
+        label: "Category H Division 1 — Assembly Other Than Group I",
+        details:
+            "Any assembly building with a stage and an occupant load of less than 1000 in the building",
     },
     {
-        value: 'Category H Division 2 — Assembly Other Than Group I',
-        label: 'Category H Division 2 — Assembly Other Than Group I',
-        details: 'Any assembly building without stage and having an occupant load of 300 or more in the building'
+        value: "Category H Division 2 — Assembly Other Than Group I",
+        label: "Category H Division 2 — Assembly Other Than Group I",
+        details:
+            "Any assembly building without stage and having an occupant load of 300 or more in the building",
     },
     {
-        value: 'Category H Division 3 — Assembly Other Than Group I',
-        label: 'Category H Division 3 — Assembly Other Than Group I',
-        details: 'Any assembly building without a stage and having an occupant load of less than 300 in the building'
+        value: "Category H Division 3 — Assembly Other Than Group I",
+        label: "Category H Division 3 — Assembly Other Than Group I",
+        details:
+            "Any assembly building without a stage and having an occupant load of less than 300 in the building",
     },
     {
-        value: 'Category H Division 4 — Assembly Other Than Group I',
-        label: 'Category H Division 4 — Assembly Other Than Group I',
-        details: 'Stadia, reviewing stands, amusement park structures not included within Group I or in Division 1, 2, and 3 of this Group'
+        value: "Category H Division 4 — Assembly Other Than Group I",
+        label: "Category H Division 4 — Assembly Other Than Group I",
+        details:
+            "Stadia, reviewing stands, amusement park structures not included within Group I or in Division 1, 2, and 3 of this Group",
     },
     {
-        value: 'Category I — Assembly Occupant Load 1000 or More',
-        label: 'Category I — Assembly Occupant Load 1000 or More',
-        details: 'Any assembly building with an age and an occupant load of 1000 or more in the building'
+        value: "Category I — Assembly Occupant Load 1000 or More",
+        label: "Category I — Assembly Occupant Load 1000 or More",
+        details:
+            "Any assembly building with an age and an occupant load of 1000 or more in the building",
     },
     {
-        value: 'Category J Division 1 — Accessory',
-        label: 'Category J Division 1 — Accessory',
-        details: 'Private garage, carports, sheds and agriculture buildings'
+        value: "Category J Division 1 — Accessory",
+        label: "Category J Division 1 — Accessory",
+        details: "Private garage, carports, sheds and agriculture buildings",
     },
     {
-        value: 'Category J Division 2 — Accessory',
-        label: 'Category J Division 2 — Accessory',
-        details: 'Fences over 1.80 meters high, tanks, and towers'
+        value: "Category J Division 2 — Accessory",
+        label: "Category J Division 2 — Accessory",
+        details: "Fences over 1.80 meters high, tanks, and towers",
     },
 ];
-const selectedOption = ref('');
-const selectedOptionDetails = ref('No Selected Category');
-const selectError = ref('');
+const selectedOption = ref("");
+const selectedOptionDetails = ref("No Selected Category");
+const selectError = ref("");
 
 const selectedradioOption = ref(0);
-const radioError = ref('');
+const radioError = ref("");
 const radioOptions = [
-    { value: 1, label: 'New' },
-    { value: 0, label: 'Renewal' }
+    { value: 1, label: "New" },
+    { value: 0, label: "Renewal" },
 ];
-const title = ref('');
+const title = ref("");
 const handlePdfTitle = ({ label }) => {
-	title.value = label;
-}
+    title.value = label;
+};
 
 const changeSelectedDetail = (details) => {
     selectedOptionDetails.value = details;
@@ -160,7 +177,7 @@ const handleDownload = ({ downloadableFile }) => {
     showPDFtemplate.value = true;
 };
 
-const bldgFormdownload = ref('templates/building_permit.pdf');
+const bldgFormdownload = ref("templates/building_permit.pdf");
 
 const formData = useForm({
     isNew: selectedradioOption,
@@ -169,7 +186,7 @@ const formData = useForm({
     type: 3,
     files: [],
     latitude: 14.069,
-    longitude: 122.96
+    longitude: 122.96,
 });
 
 const handleFileSelected = ({ file, inputId }) => {
@@ -183,7 +200,7 @@ const prepareFormData = () => {
     // data.append('project_title', formData.project_title);
     // data.append('type', formData.type);
 
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
         if (formData[key] !== undefined) {
             data.append(key, formData[key]);
         }
@@ -204,55 +221,64 @@ function checkFileUpload(inputId) {
     return false;
 }
 const submit = () => {
-    const data = prepareFormData();
-    if(formData.project_title==null){
-        toast.warning("Title must not be Empty!");
-        return;
-    }
-    if(formData.category==null){
-        toast.warning("Category must not be Empty!");
-        return;
-    }
-    formData.post('/applicationform/store', {
-        data: data,
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onError: () => {
-            toast.warning("Renewal Form must Upload a file!");
-
-        },
-        onSuccess(response) {
-            console.log(response);
-            // toast.success("Application form submitted successfully!");
-        },
-        
+    Swal.fire({
+        title: "Confirm Upload",
+        text: "Are you sure you want to upload this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Upload It!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const data = prepareFormData();
+            if (formData.project_title == null) {
+                toast.warning("Title must not be Empty!");
+                return;
+            }
+            if (formData.category == null) {
+                toast.warning("Category must not be Empty!");
+                return;
+            }
+            formData.post("/applicationform/store", {
+                data: data,
+                headers: { "Content-Type": "multipart/form-data" },
+                onError: () => {
+                    toast.warning("Renewal Form must Upload a file!");
+                },
+                onSuccess(response) {
+                    console.log(response);
+                    // toast.success("Application form submitted successfully!");
+                },
+            });
+        }
     });
-    
 };
 
 const showMaps = ref(false);
 // const toggleMaps = (event) => {
 //     showMaps.value = event;
 // }
-function toggleMaps(value){
+function toggleMaps(value) {
     showMaps.value = value;
 }
 const saveLocation = (event) => {
-    formData['latitude'] = event.lat;
-    formData['longitude'] = event.lng;
+    formData["latitude"] = event.lat;
+    formData["longitude"] = event.lng;
     console.log(formData);
-}
+};
 
-var currentCategory = '';
-var currentSubCategory = '';
-const routeName = 'renewalform';
+var currentCategory = "";
+var currentSubCategory = "";
+const routeName = "renewalform";
 
 function isCurrentCategory(category, index) {
     if (currentCategory != category || index == 0) {
         currentCategory = category;
-        
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -262,7 +288,7 @@ function isCurrentSubCategory(subcategory, index) {
 
         return true;
     }
-    
+
     return false;
 }
 </script>
@@ -270,25 +296,47 @@ function isCurrentSubCategory(subcategory, index) {
 <template>
     <div class="w-full max-w-4xl mx-auto px-4 py-6 rounded-lg card mt-5">
         <Head title="DocumentView" />
-        <h1 class="text-2xl font-bold mb-2 text-center">Business Permit Renewal Application Form</h1>
+        <h1 class="text-2xl font-bold mb-2 text-center">
+            Business Permit Renewal Application Form
+        </h1>
         <hr class="border-gray-300 mb-6" />
-        <p class="p-4 bg-red-200 mb-6 italic">Note: All the requirements or scan files you upload must be in PDF format
-            (.pdf).</p>
-            
+        <p class="p-4 bg-red-200 mb-6 italic">
+            Note: All the requirements or scan files you upload must be in PDF
+            format (.pdf).
+        </p>
+
         <form @submit.prevent="submit">
-            <div :class="{ 'hidden': requirements.current_page != 1 }">
+            <div :class="{ hidden: requirements.current_page != 1 }">
                 <!-- <RadioButton name="Please check(✔)applicable box:" :options="radioOptions"
                     v-model:modelValue="selectedradioOption" :message="radioError"/> -->
 
-                <SelectInput name="Select Category" :options="selectOptions" v-model:modelValue="selectedOption" @details="changeSelectedDetail"
-                    :message="selectError" />
+                <SelectInput
+                    name="Select Category"
+                    :options="selectOptions"
+                    v-model:modelValue="selectedOption"
+                    @details="changeSelectedDetail"
+                    :message="selectError"
+                />
 
-                <TextInput name="Project Title" v-model:modelValue="formData.project_title" :isUppercase="true"
-                    :message="formData.errors.project_title" />
+                <TextInput
+                    name="Project Title"
+                    v-model:modelValue="formData.project_title"
+                    :isUppercase="true"
+                    :message="formData.errors.project_title"
+                />
                 <div class="mb-3">
-                    Proposed Location: <span class="text-link italic cursor-pointer" @click="toggleMaps(true)">See Maps</span>
+                    Proposed Location:
+                    <span
+                        class="text-link italic cursor-pointer"
+                        @click="toggleMaps(true)"
+                        >See Maps</span
+                    >
                 </div>
-                <Map :show="showMaps" @update:show="toggleMaps(false)" @newLocation="saveLocation" />
+                <Map
+                    :show="showMaps"
+                    @update:show="toggleMaps(false)"
+                    @newLocation="saveLocation"
+                />
             </div>
             <PdfContainer
                 :pdfUrl="pdfDownloadUrl"
@@ -298,12 +346,18 @@ function isCurrentSubCategory(subcategory, index) {
             />
 
             <div v-for="(item, index) in requirements.data" :key="index">
-                <h1 class="text-2xl font-bold mb-2" v-if="isCurrentCategory(item.category_name, index)">
+                <h1
+                    class="text-2xl font-bold mb-2"
+                    v-if="isCurrentCategory(item.category_name, index)"
+                >
                     {{ item.category_name }}
                     <hr class="border-gray-300 mb-6 mt-2" />
                 </h1>
-                <p class="p-4 bg-violet-200 mb-3" v-if="isCurrentSubCategory(item.subcategory_name, index)">
-                    {{item.subcategory_name}}
+                <p
+                    class="p-4 bg-violet-200 mb-3"
+                    v-if="isCurrentSubCategory(item.subcategory_name, index)"
+                >
+                    {{ item.subcategory_name }}
                 </p>
                 <FileAction
                     :label="item.requirements_name"
@@ -318,16 +372,26 @@ function isCurrentSubCategory(subcategory, index) {
             </div>
 
             <div class="flex items-center justify-between mb-3">
-                <Pagination 
+                <Pagination
                     :currentPage="requirements.current_page"
                     :lastPage="requirements.last_page"
                     :url="routeName"
                     :previousPageUrl="requirements.prev_page_url"
                     :nextPageUrl="requirements.next_page_url"
                 />
-           
+
                 <div>
-                    <button class="danger-btn" :class="{ 'hidden': requirements.last_page != requirements.current_page }" :disabled="formData.processing">Submit</button>
+                    <button
+                        class="danger-btn"
+                        :class="{
+                            hidden:
+                                requirements.last_page !=
+                                requirements.current_page,
+                        }"
+                        :disabled="formData.processing"
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
         </form>

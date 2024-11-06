@@ -24,45 +24,45 @@ class ApprovalController extends Controller
         $queue = ApplicationForm::with(['client', 'checkedBy'])
             ->orderBy('created_at', 'desc') // Assuming you're ordering by the 'created_at' field
             ->paginate(5);
-            $output = ApplicationForm::with(['client', 'checkedBy'])->orderBy('created_at', 'desc');
+        $output = ApplicationForm::with(['client', 'checkedBy'])->orderBy('created_at', 'desc');
 
         return Inertia::render('Admin/Approval/Index', [
             'queue' => $queue,
-            'result'=> $output
+            'result' => $output
         ]);
     }
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
         // $validated = $request->all();
         $search = $request->query('search');
-       
+
         $queue = ApplicationForm::with(['client', 'checkedBy'])
-        ->where('project_title','like','%'.$search.'%')
-        ->orWhereHas('client', function($query) use($search){
-            $query->where('fname', 'like', '%' . $search . '%')
-            ->orWhere('mname', 'like', '%' . $search . '%')
-            ->orWhere('lname', 'like', '%' . $search . '%');
-        })
-        ->orWhereHas('checkedBy', function($query) use($search){
-            $query->where('fname', 'like', '%' . $search . '%')
-            ->orWhere('mname', 'like', '%' . $search . '%')
-            ->orWhere('lname', 'like', '%' . $search . '%');
-        })
-        ->orderBy('created_at', 'desc')->get();
+            ->where('project_title', 'like', '%' . $search . '%')
+            ->orWhereHas('client', function ($query) use ($search) {
+                $query->where('fname', 'like', '%' . $search . '%')
+                    ->orWhere('mname', 'like', '%' . $search . '%')
+                    ->orWhere('lname', 'like', '%' . $search . '%');
+            })
+            ->orWhereHas('checkedBy', function ($query) use ($search) {
+                $query->where('fname', 'like', '%' . $search . '%')
+                    ->orWhere('mname', 'like', '%' . $search . '%')
+                    ->orWhere('lname', 'like', '%' . $search . '%');
+            })
+            ->orderBy('created_at', 'desc')->get();
         return $queue;
-        
     }
     public function changeStatus(Request $request)
     {
         $validated = $request->all();
         $status = $validated['status'];
         $types = $validated['type'];
-        $remarks = $validated['remarks'];
-
+        $remarkss = $validated['remarks'];
+        
         $record = ApplicationForm::find($validated['id']);
         $user = Client::find($record->client_id)->user;
-        $remarks = $status == "Approved" ? "Completed" : $remarks;
-        // dd($record->client_id);
+        $remarks = $status == "Approved" ? "Completed" : $remarkss;
+     
         switch ($types) {
             case "1":
                 $type = "Business Permit (New)";
@@ -99,7 +99,7 @@ class ApprovalController extends Controller
         $user->notify(new NewNotification($notif, $notification));
         $record->update([
             "status" => $status,
-            "remarks" => $remarks,
+            "remarks" => $remarkss,
             "checked_by" => auth()->user()->client_id,
         ]);
         return Redirect::route('admin.approval.index');
@@ -107,34 +107,38 @@ class ApprovalController extends Controller
 
     public function addDocumentRemarks(Request $request)
     {
+
         // Find the document by ID
         $document = ApplicationDocument::find($request->id);
 
-        // If remarks already exist, return an error
         if ($document->remarks) {
+            // Update the document with the new remarks
+            $document->update(['is_file_approve' => $request->isFileApprove, 'remarks' => $request->remarks]);
+            // Return a redirect with success message
             return response()->json([
-                'remarks' => 'Remarks already exist for this document.',
-                'success' => false,
+                'remarks' => 'Remarks Updated Successfully',
+                'success' => true,
+                'datas' => $document->remarks
+            ]);
+        } else {
+            // Update the document with the new remarks
+            $document->update(['is_file_approve' => $request->isFileApprove, 'remarks' => $request->remarks]);
+
+            // Return a redirect with success message
+            return response()->json([
+                'remarks' => 'Remarks Added Successfully',
+                'success' => true,
                 'datas' => $document->remarks
             ]);
         }
-        
-        // Update the document with the new remarks
-        $document->update(['is_file_approve'=>$request->isFileApprove,'remarks' => $request->remarks]);
-
-        // Return a redirect with success message
-        return response()->json([
-            'remarks' => 'Remarks Added Successfully',
-            'success' => true,
-            'datas' => $document->remarks
-        ]);
     }
 
-    public function isCheck(Request $req){
+    public function isCheck(Request $req)
+    {
         $id = $req->query('id');
         $data = ApplicationDocument::find($id);
         return response()->json($data);
-     }
+    }
     public function getRecord(Request $request)
     {
         $id = $request->id;
@@ -143,11 +147,11 @@ class ApprovalController extends Controller
         $application_docs = ApplicationDocument::with('');
         $form = ApplicationForm::find($id);
         $record = Requirement::getRequirementsWithApplicationForm($id, $clientId, 5, $type);
-        $isApprove = ApplicationDocument::where('application_form_id',$form->id)->get();
+        $isApprove = ApplicationDocument::where('application_form_id', $form->id)->get();
         $client = Client::find($clientId);
         // $client = User::where('client_id', $clientId)
         //     ->first();
-
+        
         $age = $this->calculateAge($client['birthday']);
         $client['age'] = $age;
 
@@ -157,7 +161,7 @@ class ApprovalController extends Controller
             'client' => $client,
             'typeProp' => $type,
             'params' => $request->only(['id', 'type', 'clientId']),
-            'fileApprove'=>$isApprove
+            'fileApprove' => $isApprove
         ]);
     }
 
@@ -168,7 +172,7 @@ class ApprovalController extends Controller
      * @return int|null
      */
 
-    
+
     private function calculateAge(?string $date): ?int
     {
         if (is_null($date)) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     ApprovalController,
     BuildingPermitFormController,
     BusinessPermitFormController,
+    CreateController,
     DocumentController,
     HistoryController,
     InboxController,
@@ -89,7 +90,14 @@ Route::middleware('auth')->group(function () {
     /**
      * Handles the route groups for admin
      */
+
     Route::prefix('/admin')->name('admin.')->group(function () {
+        Route::post('/registeradmin', [MainController::class, 'registeradmin'])->name('adminreg');
+
+        Route::get('/{query}/{type}',[AdminController::class,'views'])->name('types');
+        Route::get('/show',[CreateController::class,'index'])->name('showAdmin');
+        Route::get('/create',[CreateController::class,'create'])->name('create');
+
         Route::prefix('/dashboard')->group(function () {
             Route::get('/', [AdminController::class, 'index'])->name('dashboard');
             // Route::inertia('/businesspermit', 'Admin/Dashboard/Partials/AdminDocumentViewBusinessPermit')->name('documentviewbusiness');
@@ -157,7 +165,7 @@ Route::middleware('guest')->group(function () {
 
     // Route::inertia('/register', 'Auth/Register')->name('register');
     Route::get('/register', [MainController::class, 'registerIndex'])->name('register');
-    Route::post('/register', [MainController::class, 'register']);
+    Route::post('/register', [MainController::class, 'register'])->name('reg');
 
     // Route::inertia('/login', 'Auth/Login')->name('login');
     Route::inertia('/map', 'Components/Map')->name('map');
