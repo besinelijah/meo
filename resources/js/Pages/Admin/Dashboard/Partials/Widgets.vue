@@ -21,7 +21,7 @@ const props = defineProps({
       </div>
       <div class="flex-1 overflow-hidden rounded-lg shadow-lg m-2 p-6 bg-custom-yellow"  style="display: flex; flex-direction: column;">
         <p class="text-center text-white mt-2" style="font-weight: bold; font-size: 1.3em;">Building Permit</p>
-        <a href="approved/2" class="text-center text-white mt-2">Total Approved: {{totalsApproved.businessPermit }}</a>
+        <a href="approved/2" class="text-center text-white mt-2">Total Approved: {{totalsApproved.building }}</a>
         <a href="total/2" class="text-center text-white mt-2">Total Application: {{ totals.building }}</a>
         <a href="today/2" class="text-center text-white mt-2">Today: {{ totalsToday.building }}</a>
       </div>
