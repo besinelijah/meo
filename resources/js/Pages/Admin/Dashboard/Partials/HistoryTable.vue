@@ -15,7 +15,7 @@ const props = defineProps({
     <div>
         <div class="flex w-full justify-between">
             <h2 class="font-bold text-lg text-typography leading-tight">
-                History
+                Users
             </h2>
             <Link
                 :href="route('admin.history.index')"

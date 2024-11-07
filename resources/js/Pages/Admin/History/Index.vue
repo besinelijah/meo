@@ -9,11 +9,11 @@ defineOptions({layout: AuthenticatedLayout});
 </script>
 
 <template>
-  <Head title="History" />
+  <Head title="Users" />
     <div class="px-6">
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-center">
-          History
+          Users
         </h1>
       </div>
 

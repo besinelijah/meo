@@ -134,7 +134,7 @@ onMounted(() => {
                     class="nav-link"
                 >
                     <i class="fas fa-clock-rotate-left w-5 h-5 text-center"></i>
-                    <span class="ms-3">History</span>
+                    <span class="ms-3">Users</span>
                 </Link>
             </li>
         </ul>
