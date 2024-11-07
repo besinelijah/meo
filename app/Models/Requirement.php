@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Requirement extends Model
 {
@@ -110,5 +111,9 @@ class Requirement extends Model
         }
 
         return $result->paginate($page);
+    }
+
+    public function subcat():BelongsTo{
+        return $this->belongsTo(Subcategory::class,'subcategory_id');
     }
 }

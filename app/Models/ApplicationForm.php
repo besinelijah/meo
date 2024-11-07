@@ -58,7 +58,6 @@ class ApplicationForm extends Model
     {
         return self::where('type', $type)
             ->where('status',"Approved")
-            ->whereDate('created_at', Carbon::today())
             ->count();
     }
 }

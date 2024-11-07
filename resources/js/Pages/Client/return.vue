@@ -8,11 +8,15 @@ import SelectInput from "../Components/SelectInput.vue";
 import TextInput from "../Components/TextInput.vue";
 import Map from "../Components/Map.vue";
 import PdfContainer from "../Components/PdfContainer.vue";
-
+import FileAction from "../Components/FileAction.vue";
+import Pagination from "../../Components/Pagination.vue";
+const toast = useToast()
 const props = defineProps({
-  title: [Object, String],
-  datas: [Object, Array],
-  requirements: [Object, Array],
+    title: [Object, String],
+    datas: [Object, Array],
+    requirements: [Object, Array],
+    id: [Object, Number],
+
 });
 const title = ref("");
 const pdfDownloadUrl = ref("https://example.com/path/to/your/pdf-file.pdf");
@@ -43,7 +47,6 @@ function getType(type) {
             break;
     }
     return text;
-
 }
 const selectedOption = ref(props.datas[0].form.category);
 const selectedradioOption = ref(1);
@@ -186,6 +189,8 @@ const selectOptions = [
         details: "Fences over 1.80 meters high, tanks, and towers",
     },
 ];
+// const routeName = `returned/${props.title}/${props.datas[0].application_form_id}`;
+const routeName = "businesspermitform";
 
 const showMaps = ref(false);
 // const toggleMaps = (event) => {
@@ -194,6 +199,10 @@ const showMaps = ref(false);
 function toggleMaps(value) {
     showMaps.value = value;
 }
+const saveLocation = (event) => {
+    formData["latitude"] = event.lat;
+    formData["longitude"] = event.lng;
+};
 
 var currentCategory = "";
 var currentSubCategory = "";
@@ -217,7 +226,7 @@ function isCurrentSubCategory(subcategory, index) {
     return false;
 }
 function checkFileUpload(inputId) {
-    console.log(formData.files)
+    console.log(formData.files);
     if (formData.files[inputId] != null) {
         return true;
     }
@@ -227,24 +236,83 @@ function checkFileUpload(inputId) {
 const handleFileSelected = ({ file, inputId }) => {
     formData.files[inputId] = file;
 };
+const prepareFormData = () => {
+    const data = new FormData();
+    // data.append('isNew', formData.isNew);
+    // data.append('category', formData.category);
+    // data.append('project_title', formData.project_title);
+    // data.append('type', formData.type);
+
+    Object.keys(formData).forEach((key) => {
+        if (formData[key] !== undefined) {
+            data.append(key, formData[key]);
+        }
+    });
+    // data.append('files', formData.files);
+
+    // formData.files.forEach((file, index) => {
+    //     data.append(`files[${index}]`, file);
+    // });
+
+    return formData;
+};
+
+const submit = () => {
+    const data = prepareFormData();
+    // console.log(formData,data.files[0]);
+    // alert("jester")
+    Swal.fire({
+        title: "Confirm Upload",
+        text: "Are you sure you want to upload this form?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Upload It!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (formData.project_title == null) {
+                toast.warning("Title must not be Empty!");
+                return;
+            }
+            if (formData.category == null) {
+                toast.warning("Category must not be Empty!");
+                return;
+            }
+            
+            formData.post(`/applicationform/update/${props.id}`, {
+                data: data,
+                onError(error) {
+
+                    console.log(error);
+                },
+                onSuccess(response) {
+                    console.log(response);
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>
     <div class="w-full max-w-4xl mx-auto px-4 py-6 rounded-lg card mt-5">
         <Head title="DocumentView" />
         <h1 class="text-2xl font-bold mb-2 text-center">
-            {{getType(title)}} Form
+            {{getType(title)}}
         </h1>
         <hr class="border-gray-300 mb-6" />
         <p class="p-4 bg-red-200 mb-6 italic">
             Note: All the requirements or scan files you upload must be in PDF
             format (.pdf).
         </p>
+
         <form
+            @submit.prevent="submit"
             method="POST"
             enctype="multipart/form-data"
         >
-        <div :class="{ hidden: requirements.current_page != 1 }">
+            <div :class="{ hidden: requirements.current_page != 1 }">
                 <!-- <RadioButton name="Please check(✔)applicable box:" :options="radioOptions"
                     v-model:modelValue="selectedradioOption" :message="radioError"/> -->
 
@@ -281,44 +349,45 @@ const handleFileSelected = ({ file, inputId }) => {
                 :title="title"
                 @update:show="togglePDFformatModal"
             />
-           
-            <div v-for="(item, index) in requirements.data" :key="index">
+
+            <div v-for="(item, index) in datas" :key="index">
                 <h1
                     class="text-2xl font-bold mb-2"
-                    v-if="isCurrentCategory(item.category_name, index)"
+                    v-if="isCurrentCategory(item.requirement.subcat.category.category_name, index)"
                 >
-                    {{ item.category_name }}
+                    {{ item.requirement.subcat.category.category_name }}
                     <hr class="border-gray-300 mb-6 mt-2" />
                 </h1>
                 <p
                     class="p-4 bg-violet-200 mb-3"
-                    v-if="isCurrentSubCategory(item.subcategory_name, index)"
+                    v-if="isCurrentSubCategory(item.requirement.subcat.subcategory_name, index)"
                 >
-                    {{ item.subcategory_name }}
+                    {{ item.requirement.subcat.subcategory_name }}
                 </p>
 
                 <FileAction
-                    :label="item.requirements_name"
-                    :title="item.requirements_name"
-                    :inputId="item.requirements_id"
+                    :label="item.requirement.name"
+                    :title="item.requirement.name"
+                    :inputId="item.requirement_id"
                     @file-selected="handleFileSelected"
                     @label="handlePdfTitle"
-                    :downloadableFile="item.template_file_path"
+                    :downloadableFile="item.file_path"
                     @download-url="handleDownload"
-                    :hasUploadedFile="checkFileUpload(item.requirements_id)"
+                    :hasUploadedFile="checkFileUpload(item.requirement_id)"
                 />
             </div>
 
             <div class="flex items-center justify-between mb-3">
-                <Pagination
+                <!-- <Pagination
                     :currentPage="requirements.current_page"
                     :lastPage="requirements.last_page"
                     :url="routeName"
                     :previousPageUrl="requirements.prev_page_url"
                     :nextPageUrl="requirements.next_page_url"
-                />
+                /> -->
                 <div>
                     <button
+                    type="submit"
                         class="danger-btn"
                         :class="{
                             hidden:
@@ -327,7 +396,7 @@ const handleFileSelected = ({ file, inputId }) => {
                         }"
                         :disabled="formData.processing"
                     >
-                        Re Submit
+                        Submit
                     </button>
                 </div>
             </div>

@@ -86,8 +86,7 @@ class AdminController extends Controller
     public function views($query, $type)
     {
         $data = null;
-        $approve = ApplicationForm::with('client')->where('type', $type)->where('status', "Approved")
-            ->whereDate('created_at', Carbon::today())->get();
+        $approve = ApplicationForm::with('client')->where('type', $type)->where('status', "Approved")->get();
         $total = ApplicationForm::with('client')->where('type', $type)->get();
         $today = ApplicationForm::with('client')->where('type', $type)->whereDate('created_at', Carbon::today())->get();
 
