@@ -22,7 +22,7 @@ defineOptions({ layout: AuthenticatedLayout });
             <table>
                 <thead style="background-color: #698FA5; color:white;">
                     <tr>
-                        <th>No.</th>
+                        <!-- <th>No.</th> -->
                         <th>Username</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -37,7 +37,7 @@ defineOptions({ layout: AuthenticatedLayout });
                     
                     <template v-for="(item, index) in queue" :key="index">
                         <tr>
-                            <td>{{ index }}</td>
+                            <!-- <td>{{ index }}</td> -->
                             <td>{{ item.username }}</td>
                             <td>{{ item.client.lname+", "+item.client.fname+" "+item.client.mname }}</td>
                             <td>{{ item.email }}</td>
